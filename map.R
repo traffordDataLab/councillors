@@ -66,9 +66,7 @@ map <- leaflet(height = "100%", width = "100%") %>%
       onClick = JS(c("function(btn,  map){map.locate({setView:true,enableHighAccuracy: true })}"))
     )) %>% 
   addControl(paste0("<strong>Trafford councillors by ward</strong>"), position = 'topright',  className = "map-title") %>% 
-  onRender(
-    "function(el, t) {var myMap = this;myMap._container.style['background'] = '#ffffff';}",
-    paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
+  onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
 
 # add CSS
 browsable(
