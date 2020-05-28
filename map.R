@@ -18,9 +18,9 @@ df <- read_csv("councillors.csv")
 councillors <- df %>% 
   mutate(popup = paste0("
   <figure>
-  <img src='", Image, "' alt='", Name, "'>
-  <figcaption><a href='", Page, "' target='_blank'>", Name, "</a><br />", Party, "<br /> 
-  <a href='mailto:", Email, "'>", Email,"</a><br />", Telephone, "</figcaption>
+  <img src='", Image, "' alt='", Name, "'/ >
+  <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, "<br />
+  <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "</figcaption>
   </figure>")) %>%
   select(Ward, popup) %>% 
   group_by(Ward) %>% 
@@ -28,7 +28,7 @@ councillors <- df %>%
   pivot_wider(names_from = id, values_from = popup) %>% 
   mutate(`3` = replace_na(`3`, "")) %>% 
   unite(popup, 2:4, sep = "", remove = TRUE) %>% 
-  mutate(popup = paste0("<h3 style='text-align: center;'>", Ward, "</h3>", popup))
+  mutate(popup = paste0("<h2 class='wardTitle'>", Ward, "</h2>", popup))
 
 # retrieve ward codes from ONS Open Geography Portal
 lookup <- read_csv("https://opendata.arcgis.com/datasets/e169bb50944747cd83dcfb4dd66555b1_0.csv") %>% 
@@ -75,17 +75,62 @@ browsable(
     tags$head(
       tags$style(
         "@import url('https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto');
-        html, body {height: 100%; margin: 0; font-family: 'Open Sans', sans-serif;}
-        .leaflet-popup {position: absolute; text-align: center;}
-        .leaflet-popup-content {margin-top: 5px;
-                                margin-left: 0px;
-                                min-width: 100 px !important;
-                                max-height: 300px;
-                                overflow: auto;}
-        .leaflet-control.map-title {background-color: transparent;
-                                    color: #000000;
-                                    font-size: 22px;}
-        .map-title h1 {color: #707070; font-family: 'Roboto', sans-serif; font-size: 1em; padding: 0; margin: 0; text-shadow: -1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF}"
+        html, body {
+            height: 100%; 
+            margin: 0; 
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #707070;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .leaflet-container a {
+            color: #046dc3;
+        }
+        .leaflet-bar a {
+            color: #212121;
+        }
+        .leaflet-popup {
+            position: absolute;
+        }
+        .leaflet-popup-content {
+            white-space: nowrap;
+            margin-top: 5px;
+            margin-left: -20px;
+            min-width: 100px !important;
+            max-height: 300px;
+            overflow: auto;
+        }
+        .leaflet-popup-content img {
+            xborder: 1px solid black;
+            box-shadow: 3px 3px 5px #ccc;
+        }
+        .leaflet-control.map-title {
+            background-color: transparent;
+        }
+        .leaflet-control.map-title h1 {
+            text-shadow: -1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF;
+            padding: 0;
+            margin: 0;
+        }
+        .leaflet-control-attribution {
+            /* fixes text scaling issue when changing from portrait to landscape on mobile browsers */
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;  
+        }
+        .wardTitle {
+            margin-left: 39px;
+        }
+        .boldText {
+            font-weight: bold;
+        }"
       )
     )
   ),
