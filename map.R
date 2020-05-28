@@ -101,14 +101,13 @@ browsable(
         }
         .leaflet-popup-content {
             white-space: nowrap;
-            margin-top: 5px;
+            margin-top: 0;
             margin-left: -20px;
             min-width: 100px !important;
             max-height: 300px;
             overflow: auto;
         }
         .leaflet-popup-content img {
-            xborder: 1px solid black;
             box-shadow: 3px 3px 5px #ccc;
         }
         .leaflet-control.map-title {
