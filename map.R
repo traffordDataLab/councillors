@@ -50,11 +50,11 @@ map <- leaflet(height = "100%", width = "100%") %>%
   addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", 
            attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Source: <a href="https://democratic.trafford.gov.uk/mgMemberIndex.aspx?FN=WARD&VW=TABLE&PIC=1" target="_blank">Trafford Council</a>',
            options = tileOptions(minZoom = 12, maxZoom = 17)) %>%
-  addPolygons(data = sf, fillColor = "#E8E5D8", weight = 0.8, opacity = 1, color = "#212121",
+  addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121",
               popup = ~popup,
-              highlight = highlightOptions(color = "#FFFF00", weight = 3, bringToFront = TRUE)) %>% 
+              highlight = highlightOptions(color = "#046DC3", weight = 3, bringToFront = TRUE)) %>% 
   addLabelOnlyMarkers(data = sf, lng = ~lon, lat = ~lat, label = ~as.character(area_name), 
-                      labelOptions = labelOptions(noHide = T, textOnly = T, direction = "right",
+                      labelOptions = labelOptions(noHide = T, textOnly = T, direction = "left",
                         style = list("color" = "#212121",
                                      "font-size" = "14px",
                                      "text-shadow" = "-1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF"))) %>%
@@ -66,7 +66,7 @@ map <- leaflet(height = "100%", width = "100%") %>%
       title = "Locate Me",
       onClick = JS(c("function(btn,  map){map.locate({setView:true,enableHighAccuracy: true })}"))
     )) %>% 
-  addControl(paste0("<strong>Trafford councillors by ward</strong>"), position = 'topright',  className = "map-title") %>% 
+  addControl(paste0("<h1>Trafford councillors by ward</h1>"), position = 'topright',  className = "map-title") %>% 
   onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
 
 # add CSS
@@ -74,7 +74,8 @@ browsable(
   tagList(list(
     tags$head(
       tags$style(
-        "html, body {height: 100%; margin: 0;}
+        "@import url('https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto');
+        html, body {height: 100%; margin: 0; font-family: 'Open Sans', sans-serif;}
         .leaflet-popup {position: absolute; text-align: center;}
         .leaflet-popup-content {margin-top: 5px;
                                 margin-left: 0px;
@@ -83,7 +84,8 @@ browsable(
                                 overflow: auto;}
         .leaflet-control.map-title {background-color: transparent;
                                     color: #000000;
-                                    font-size: 22px;}"
+                                    font-size: 22px;}
+        .map-title h1 {color: #707070; font-family: 'Roboto', sans-serif; font-size: 1em; padding: 0; margin: 0; text-shadow: -1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF}"
       )
     )
   ),
