@@ -71,10 +71,11 @@ map <- leaflet(height = "100%", width = "100%") %>%
   addControl(paste0("<h1>Trafford councillors by ward</h1>"), position = 'topright',  className = "map-title") %>% 
   onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
 
-# add CSS
+# add CSS, page title, lang attribute and ARIA landmarks
 browsable(
   tagList(list(
     tags$head(
+      tags$title('Trafford councillors by ward'),
       tags$style(
         "@import url('https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto');
         html, body {
