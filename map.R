@@ -108,6 +108,10 @@ browsable(
             text-decoration: underline;
         }
         
+        .leaflet-bar a.leaflet-disabled {
+            color: #757575;
+        }
+        
         .leaflet-container a {
             color: #046dc3;
         }
