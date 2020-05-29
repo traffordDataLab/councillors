@@ -18,10 +18,12 @@ df <- read_csv("councillors.csv")
 councillors <- df %>% 
   mutate(popup = paste0("
   <figure>
-  <img src='", Image, "' alt='", Name, "'/ >
-  <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, "<br />
-  <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "</figcaption>
-  </figure>")) %>%
+    <img src='", Image, "' alt=''/>
+    <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, ".</figcaption>
+  </figure>  
+  <address>
+    <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "
+  </address>")) %>%
   select(Ward, popup) %>% 
   group_by(Ward) %>% 
   mutate(id = 1:n()) %>% 
@@ -80,53 +82,82 @@ browsable(
             margin: 0; 
             font-family: 'Open Sans', sans-serif;
         }
+        
         h1, h2, h3 {
             font-family: 'Roboto', sans-serif;
             color: #707070;
         }
+        
+        figure, figcaption, address {
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+        
+        figure {
+            margin-top: 1.5em;
+        }
+        
         a {
             text-decoration: none;
         }
+        
         a:hover {
             text-decoration: underline;
         }
+        
         .leaflet-container a {
             color: #046dc3;
         }
+        
         .leaflet-bar a {
             color: #212121;
         }
+        
         .leaflet-popup {
             position: absolute;
         }
+        
         .leaflet-popup-content {
             white-space: nowrap;
-            margin-top: 0;
-            margin-left: -20px;
+            margin: 0 1.5em 1.5em 1.5em;
             min-width: 100px !important;
             max-height: 300px;
             overflow: auto;
         }
+        
+        .leaflet-popup-content h2 {
+            text-align: center;
+            margin: 0.25em 0 0 0;
+            padding: 0;
+            border-bottom: 1px solid #ccc;
+        }
+        
         .leaflet-popup-content img {
             box-shadow: 3px 3px 5px #ccc;
         }
+        
         .leaflet-control.map-title {
             background-color: transparent;
         }
+        
         .leaflet-control.map-title h1 {
             text-shadow: -1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF;
             padding: 0;
             margin: 0;
         }
+        
         .leaflet-control-attribution {
             /* fixes text scaling issue when changing from portrait to landscape on mobile browsers */
             -webkit-text-size-adjust: 100%;
             -moz-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;  
         }
+        
         .wardTitle {
             margin-left: 39px;
         }
+        
         .boldText {
             font-weight: bold;
         }"
