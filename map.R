@@ -30,7 +30,7 @@ councillors <- df %>%
   pivot_wider(names_from = id, values_from = popup) %>% 
   mutate(`3` = replace_na(`3`, "")) %>% 
   unite(popup, 2:4, sep = "", remove = TRUE) %>% 
-  mutate(popup = paste0("<h2 class='wardTitle'>", Ward, "</h2>", popup))
+  mutate(popup = paste0("<h2>", Ward, "</h2>", popup))
 
 # retrieve ward codes from ONS Open Geography Portal
 lookup <- read_csv("https://opendata.arcgis.com/datasets/e169bb50944747cd83dcfb4dd66555b1_0.csv") %>% 
@@ -152,10 +152,6 @@ browsable(
             -webkit-text-size-adjust: 100%;
             -moz-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;  
-        }
-        
-        .wardTitle {
-            margin-left: 39px;
         }
         
         .boldText {
