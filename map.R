@@ -18,11 +18,11 @@ df <- read_csv("councillors.csv")
 councillors <- df %>% 
   mutate(popup = paste0("
   <figure>
-    <img src='", Image, "' alt=''/>
-    <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, ".</figcaption>
+  <img src='", Image, "' alt='", Name, "'/>
+  <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, ".</figcaption>
   </figure>  
   <address>
-    <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "
+  <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "
   </address>")) %>%
   select(Ward, popup) %>% 
   group_by(Ward) %>% 
@@ -69,17 +69,16 @@ map <- leaflet(height = "100%", width = "100%") %>%
       onClick = JS(c("function(btn,  map){map.locate({setView:true,enableHighAccuracy: true })}"))
     )) %>% 
   addControl(paste0("<h1>Trafford councillors by ward</h1>"), position = 'topright',  className = "map-title") %>% 
-  onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'",");}"))
+  onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\'",");}")) %>%
+  onRender(paste0("function(el, x) {$('head').append(","\'<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto\"/>\'",");}"))
 
 # add page title and CSS
 browsable(
   tagList(list(
     tags$head(
       tags$title("Trafford councillors by ward"),
-      tags$style("
-        @import url('https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto');
-        
-        html, body {
+      tags$style(
+        "html, body {
             height: 100%; 
             margin: 0; 
             font-family: 'Open Sans', sans-serif;
@@ -169,3 +168,4 @@ browsable(
   map
   )
 )
+
