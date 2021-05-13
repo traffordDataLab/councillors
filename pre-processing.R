@@ -6,21 +6,22 @@
 
 library(tidyverse) ; library(rvest)
 
-webpage <- read_html("https://democratic.trafford.gov.uk/mgMemberIndex.aspx?VW=TABLE&PIC=1&FN=WARD")
+webpage <- read_html("https://democratic.trafford.gov.uk/mgMemberIndex.aspx?FN=WARD&VW=TABLE&PIC=1")
 
 # retrieve basic information
 info <- webpage %>% 
   html_node("#mgTable1") %>%
-  html_table(fill = TRUE) %>% 
+  html_table(header = NA) %>% 
   as_tibble() %>% 
   mutate(Name = str_remove_all(Councillor, "\\\r\n.*"),
          Ward = str_remove_all(Ward, " Ward"),
          Telephone = str_extract_all(Councillor, "(?<=: )(.*)(?= \t)"),
          Email = str_extract_all(Councillor, paste(c("(?<=\tWork: )(.*)","(?<=\t\r\n\t\t\t\t\tHome: )(.*)"), collapse="|"))) %>%
   unnest_wider(Telephone) %>% 
-  unite(Telephone, c(...1, ...2), sep = " ; ", remove = TRUE) %>% 
-  mutate(Telephone = str_remove_all(Telephone,  "; NA")) %>% 
-  unnest(Email) %>% 
+  unite(Telephone, c(...1, ...2), sep = " ; ", remove = TRUE) %>%
+  mutate(Telephone = str_replace_all(Telephone,  "NA ; NA", replacement = NA_character_)) %>% 
+  mutate(Telephone = str_remove_all(Telephone,  " ; NA")) %>% 
+  unnest(Email, keep_empty = TRUE) %>% 
   select(Name, Party = `Political party`, Ward, Telephone, Email)
 
 # retrieve personal pages
