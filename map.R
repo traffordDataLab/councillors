@@ -18,12 +18,13 @@ df <- read_csv("councillors.csv")
 councillors <- df %>% 
   mutate(popup = paste0("
   <figure>
-  <img src='", Image, "' alt='", Name, "'/>
+  <img src='", Image, "' alt=''/>
   <figcaption><a href='", Page, "' target='_blank' class='boldText'>", Name, "</a><br />", Party, ".</figcaption>
   </figure>  
-  <address>
-  <a href='mailto:", Email, "'>", Email, "</a><br />", Telephone, "
-  </address>")) %>%
+  <address>",
+  if_else(is.na(Email), "", str_c("<a href='mailto:", Email, "'>", Email, "</a><br />")),
+  if_else(is.na(Telephone), "", Telephone),
+  "</address>")) %>%
   select(Ward, popup) %>% 
   group_by(Ward) %>% 
   mutate(id = 1:n()) %>% 
@@ -86,6 +87,13 @@ browsable(
             height: 100%; 
             margin: 0; 
             font-family: 'Open Sans', sans-serif;
+        }
+        
+        main {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
         }
         
         h1, h2, h3 {
@@ -177,7 +185,7 @@ browsable(
       )
     )
   ),
-  map
+  tags$main(map)
   )
 )
 
