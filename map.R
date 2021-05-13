@@ -38,10 +38,11 @@ lookup <- read_csv("https://opendata.arcgis.com/datasets/e169bb50944747cd83dcfb4
   pull(WD19CD)
 
 # retrieve ward vector boundaries
-wards <- st_read(paste0("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD_DEC_2019_UK_BGC/FeatureServer/0/query?where=", 
-                        URLencode(paste0("wd19cd IN (", paste(shQuote(lookup), collapse = ", "), ")")), 
-                        "&outFields=*&outSR=4326&f=geojson")) %>% 
-  select(area_code = WD19CD, area_name = WD19NM, lon = LONG, lat = LAT)
+#wards <- st_read(paste0("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD_DEC_2019_UK_BGC/FeatureServer/0/query?where=", 
+#                        URLencode(paste0("wd19cd IN (", paste(shQuote(lookup), collapse = ", "), ")")), 
+#                        "&outFields=*&outSR=4326&f=geojson")) #%>% 
+#  select(area_code = WD19CD, area_name = WD19NM, lon = LONG, lat = LAT)
+wards <- st_read("https://www.trafforddatalab.io/spatial_data/ward/2017/trafford_ward_generalised.geojson")
 
 # join councillor information to ward boundaries
 sf <- left_join(wards, councillors, by = c("area_name" = "Ward")) 
@@ -50,7 +51,7 @@ sf <- left_join(wards, councillors, by = c("area_name" = "Ward"))
 map <- leaflet(height = "100%", width = "100%") %>% 
   setView(-2.35533522781156, 53.419025498197, zoom = 12) %>% 
   addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", 
-           attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2020)</a> | Source: <a href="https://democratic.trafford.gov.uk/mgMemberIndex.aspx?FN=WARD&VW=TABLE&PIC=1" target="_blank">Trafford Council</a>',
+           attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://www.ons.gov.uk/methodology/geography/licences">Contains OS data © Crown copyright and database right (2021)</a> | Source: <a href="https://democratic.trafford.gov.uk/mgMemberIndex.aspx?FN=WARD&VW=TABLE&PIC=1" target="_blank">Trafford Council</a>',
            options = tileOptions(minZoom = 12, maxZoom = 17)) %>%
   addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121",
               popup = ~popup,
@@ -60,7 +61,8 @@ map <- leaflet(height = "100%", width = "100%") %>%
                         style = list("color" = "#212121",
                                      "font-size" = "14px",
                                      "text-shadow" = "-1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF"))) %>%
-  addFullscreenControl() %>% 
+  #addFullscreenControl() %>%
+  addResetMapButton() %>%
   addEasyButton(
     easyButton(
       position = "topleft",
@@ -68,6 +70,7 @@ map <- leaflet(height = "100%", width = "100%") %>%
       title = "Locate Me",
       onClick = JS(c("function(btn,  map){map.locate({setView:true,enableHighAccuracy: true })}"))
     )) %>% 
+  
   addControl(paste0("<h1>Trafford councillors by ward</h1>"), position = 'topright',  className = "map-title") %>% 
   onRender(paste0("function(el, x) {$('head').append(","\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\'",");}")) %>%
   onRender(paste0("function(el, x) {$('head').append(","\'<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Open+Sans%7CRoboto\"/>\'",");}"))
@@ -75,6 +78,7 @@ map <- leaflet(height = "100%", width = "100%") %>%
 # add page title and CSS
 browsable(
   tagList(list(
+    tags$html(lang = "en-GB"),
     tags$head(
       tags$title("Trafford councillors by ward"),
       tags$style(
@@ -121,6 +125,14 @@ browsable(
         
         .leaflet-popup {
             position: absolute;
+        }
+        
+        /* Override Leaflet style to increase contrast */
+        .leaflet-container a.leaflet-popup-close-button {
+            color: #555;
+        }
+        .leaflet-container a.leaflet-popup-close-button:hover {
+            color: #212121;
         }
         
         .leaflet-popup-content {
