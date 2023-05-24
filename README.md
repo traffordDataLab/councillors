@@ -30,7 +30,7 @@
 </tr>
 <tr>
 	<td>Temporal coverage</td>
-	<td>2022</td>
+	<td>2023</td>
 </tr>
 <tr>
 	<td>Update frequency</td>

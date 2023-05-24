@@ -17,10 +17,10 @@ info <- webpage %>%
          Ward = str_remove_all(Ward, " Ward"),
          Telephone = str_extract_all(Councillor, "(?<=: )(.*)(?= \t)"),
          Email = str_extract_all(Councillor, paste(c("(?<=\tWork: )(.*)","(?<=\t\r\n\t\t\t\t\tHome: )(.*)"), collapse="|"))) %>%
-  unnest_wider(Telephone) %>% 
-  unite(Telephone, c(...1, ...2), sep = " ; ", remove = TRUE) %>%
-  mutate(Telephone = str_replace_all(Telephone,  "NA ; NA", replacement = NA_character_)) %>% 
-  mutate(Telephone = str_remove_all(Telephone,  " ; NA")) %>% 
+  unnest_wider(Telephone, names_sep = "#") %>% 
+  unite(Telephone, c(`Telephone#1`,`Telephone#2`,`Telephone#3`), sep = ", ", remove = TRUE) %>%
+  mutate(Telephone = str_replace_all(Telephone,  ", NA", replacement = "NA")) %>% 
+  mutate(Telephone = str_remove_all(Telephone,  "NA")) %>% 
   unnest(Email, keep_empty = TRUE) %>% 
   select(Name, Party = `Political party`, Ward, Telephone, Email)
 
@@ -51,7 +51,6 @@ councillors <- left_join(info, page, by = "Name") %>%
   mutate(Ward = case_when(
     Ward == "Ashton Upon Mersey" ~ "Ashton upon Mersey",
     Ward == "Bucklow St. Martins" ~ "Bucklow-St Martins",
-    Ward == "St. Mary's" ~ "St Mary's",
     TRUE ~ Ward))
 
 # write results
