@@ -33,16 +33,7 @@ councillors <- df %>%
   unite(popup, 2:4, sep = "", remove = TRUE) %>% 
   mutate(popup = paste0("<h2>", Ward, "</h2>", popup))
 
-# retrieve ward codes from ONS Open Geography Portal
-#lookup <- read_csv("https://opendata.arcgis.com/datasets/e169bb50944747cd83dcfb4dd66555b1_0.csv") %>% 
-#  filter(LAD19NM == "Trafford") %>% 
-#  pull(WD19CD)
-
-# retrieve ward vector boundaries
-#wards <- st_read(paste0("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD_DEC_2019_UK_BGC/FeatureServer/0/query?where=", 
-#                        URLencode(paste0("wd19cd IN (", paste(shQuote(lookup), collapse = ", "), ")")), 
-#                        "&outFields=*&outSR=4326&f=geojson")) #%>% 
-#  select(area_code = WD19CD, area_name = WD19NM, lon = LONG, lat = LAT)
+# Load in the ward boundaries
 wards <- st_read("https://www.trafforddatalab.io/spatial_data/ward/2023/trafford_ward_full_resolution.geojson")
 
 # join councillor information to ward boundaries
@@ -57,12 +48,11 @@ map <- leaflet(height = "100%", width = "100%") %>%
   addPolygons(data = sf, fillColor = "#CCCCCC", weight = 0.8, opacity = 1, color = "#212121",
               popup = ~popup,
               highlight = highlightOptions(color = "#046DC3", weight = 3, bringToFront = TRUE)) %>% 
-  addLabelOnlyMarkers(data = sf, lng = ~lon, lat = ~lat, label = ~as.character(area_name), 
-                      labelOptions = labelOptions(noHide = T, textOnly = T, direction = "right",
+  addLabelOnlyMarkers(data = sf, lng = ~as.numeric(lon), lat = ~as.numeric(lat), label = ~as.character(area_name), 
+                      labelOptions = labelOptions(noHide = T, textOnly = T, direction = "center",
                         style = list("color" = "#212121",
                                      "font-size" = "12px",
                                      "text-shadow" = "-1px -1px #FFFFFF, 1px -1px #FFFFFF, -1px 1px #FFFFFF, 1px 1px #FFFFFF"))) %>%
-  #addFullscreenControl() %>%
   addResetMapButton() %>%
   addEasyButton(
     easyButton(
